@@ -25,3 +25,5 @@
 - annotation.Logging 커스텀 어노테이션을 구현했다. 이 어노테이션이 붙은 메서드는 로그를 출력하는 로직이 동작하는 대상이 된다.  
 - 로그를 남기는 방법에는 Interceptor, Filter, AOP 등이 있다. 로그 출력을 위해서 요청자의 요청과 그 결과 모두를 확인해야 하기 때문에 스프링 AOP를 선택하여 구현했다.
 - 기본 데이터 세팅을 위해 schema.sql, data.sql을 구성했다.
+- 로그 출력 세팅은 logback-spring.xml에서 구성했다.
+- MDC ?

@@ -22,7 +22,8 @@ public class LoggerAspect {
 		CustomLog customLog = new CustomLog();
 		customLog.setCreatedAt(LocalDateTime.now());
 
-		HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.currentRequestAttributes()).getRequest();
+		HttpServletRequest request =
+			((ServletRequestAttributes)RequestContextHolder.currentRequestAttributes()).getRequest();
 		customLog.setIp(getClientIpAddr(request));
 		customLog.setUri(request.getRequestURI());
 		customLog.setDomain(request.getServerName());
