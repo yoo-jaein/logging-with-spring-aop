@@ -1,6 +1,5 @@
 package com.example.demo.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,12 +35,12 @@ public class AlbumController {
 		}
 	}
 
-	@GetMapping()
+	@GetMapping
 	public ResponseEntity<List<Album>> getAllAlbums() {
 		return new ResponseEntity<>(albumRepository.findAll(), HttpStatus.OK);
 	}
 
-	@PostMapping()
+	@PostMapping
 	public ResponseEntity<Album> postAlbum(@RequestBody Album album) {
 		return new ResponseEntity<>(albumRepository.save(album), HttpStatus.OK);
 	}
@@ -63,7 +62,7 @@ public class AlbumController {
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
-	@DeleteMapping()
+	@DeleteMapping
 	public ResponseEntity<HttpStatus> deleteAllAlbums() {
 		albumRepository.deleteAll();
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
