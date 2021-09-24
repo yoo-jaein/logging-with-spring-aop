@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class CustomLog {
-	private LocalDateTime createdAt;
+	private String createdAt;
 	private String ip;
 	private String item;
 	private String action;
@@ -18,4 +18,8 @@ public class CustomLog {
 	private String uri;
 	private String domain;
 	//List<> detail - 상세 내역
+
+	public String toString() {
+		return createdAt + " " + ip + " " + item + " " + action + " " +  result + " " + uri + " " + domain;
+	}
 }

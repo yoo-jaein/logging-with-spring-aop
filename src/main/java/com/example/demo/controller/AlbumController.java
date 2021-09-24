@@ -37,16 +37,19 @@ public class AlbumController {
 		}
 	}
 
+	@Logging
 	@GetMapping
 	public ResponseEntity<List<Album>> getAllAlbums() {
 		return new ResponseEntity<>(albumRepository.findAll(), HttpStatus.OK);
 	}
 
+	@Logging
 	@PostMapping
 	public ResponseEntity<Album> postAlbum(@RequestBody Album album) {
 		return new ResponseEntity<>(albumRepository.save(album), HttpStatus.OK);
 	}
 
+	@Logging
 	@PutMapping("/{id}")
 	public ResponseEntity<Album> putAlbum(@PathVariable Long id, @RequestBody Album album) {
 		Optional<Album> albumOptional = albumRepository.findById(id);
@@ -58,12 +61,14 @@ public class AlbumController {
 		return new ResponseEntity<>(albumRepository.save(album), HttpStatus.OK);
 	}
 
+	@Logging
 	@DeleteMapping("/{id}")
 	public ResponseEntity<HttpStatus> deleteAlbum(@PathVariable Long id) {
 		albumRepository.deleteById(id);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
+	@Logging
 	@DeleteMapping
 	public ResponseEntity<HttpStatus> deleteAllAlbums() {
 		albumRepository.deleteAll();
