@@ -22,4 +22,8 @@ public class Album {
 	@Column(name = "stock_quantity")
 	private int stockQuantity;
 	private int price;
+
+	public String toString() {
+		return id + " " + title + " " + artist + " " + stockQuantity + " " + price;
+	}
 }

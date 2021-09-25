@@ -26,7 +26,7 @@ import lombok.RequiredArgsConstructor;
 public class AlbumController {
 	private final AlbumRepository albumRepository;
 
-	@Logging
+	@Logging(item = "Album")
 	@GetMapping("/{id}")
 	public ResponseEntity<Album> getAlbum(@PathVariable Long id) {
 		Optional<Album> albumOptional = albumRepository.findById(id);
@@ -37,19 +37,19 @@ public class AlbumController {
 		}
 	}
 
-	@Logging
+	@Logging(item = "Album")
 	@GetMapping
 	public ResponseEntity<List<Album>> getAllAlbums() {
 		return new ResponseEntity<>(albumRepository.findAll(), HttpStatus.OK);
 	}
 
-	@Logging
+	@Logging(item = "Album", action = "create")
 	@PostMapping
 	public ResponseEntity<Album> postAlbum(@RequestBody Album album) {
 		return new ResponseEntity<>(albumRepository.save(album), HttpStatus.OK);
 	}
 
-	@Logging
+	@Logging(item = "Album", action = "update")
 	@PutMapping("/{id}")
 	public ResponseEntity<Album> putAlbum(@PathVariable Long id, @RequestBody Album album) {
 		Optional<Album> albumOptional = albumRepository.findById(id);
@@ -58,17 +58,23 @@ public class AlbumController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 
-		return new ResponseEntity<>(albumRepository.save(album), HttpStatus.OK);
+		Album newAlbum = albumOptional.get();
+		newAlbum.setArtist(album.getArtist());
+		newAlbum.setPrice(album.getPrice());
+		newAlbum.setTitle(album.getTitle());
+		newAlbum.setStockQuantity(album.getStockQuantity());
+
+		return new ResponseEntity<>(albumRepository.save(newAlbum), HttpStatus.OK);
 	}
 
-	@Logging
+	@Logging(item = "Album", action = "delete")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<HttpStatus> deleteAlbum(@PathVariable Long id) {
 		albumRepository.deleteById(id);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
-	@Logging
+	@Logging(item = "Album", action = "delete")
 	@DeleteMapping
 	public ResponseEntity<HttpStatus> deleteAllAlbums() {
 		albumRepository.deleteAll();

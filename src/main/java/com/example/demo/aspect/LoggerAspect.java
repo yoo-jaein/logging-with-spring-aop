@@ -1,5 +1,6 @@
 package com.example.demo.aspect;
 
+import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import com.example.demo.annotation.Logging;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -22,8 +25,8 @@ public class LoggerAspect {
 
 	private static final String format = "yyyy-MM-dd HH:mm:ss.SSS"; //2021-09-24 23:17:46.572
 
-	@Around("@annotation(com.example.demo.annotation.Logging)")
-	public Object LogMethodInvocation(ProceedingJoinPoint joinPoint) throws Throwable {
+	@Around("@annotation(com.example.demo.annotation.Logging) && @annotation(logging)")
+	public Object LogMethodInvocation(ProceedingJoinPoint joinPoint, Logging logging) throws Throwable {
 		CustomLog customLog = new CustomLog();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
 		customLog.setCreatedAt(LocalDateTime.now().format(formatter));
@@ -49,18 +52,24 @@ public class LoggerAspect {
 		log.info("~호출한 메서드 정보~");
 
 		MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
-		log.info("1) 호출한 메서드의 이름 : " + methodSignature.getName() + "()"); //getAllAlbums()
-		log.info("2) 호출 결과 타입 : " + methodSignature.getReturnType().getCanonicalName()); //org.springframework.http.ResponseEntity
-		log.info("2) 호출 결과 타입 : " + methodSignature.getMethod().getGenericReturnType()); //org.springframework.http.ResponseEntity<java.util.List<com.example.demo.model.Album>>
-		log.info("2) 호출 결과 타입 : " + methodSignature.getReturnType().getSimpleName()); //ResponseEntity
+		Method method = methodSignature.getMethod();
+
+		log.info("1) 호출한 메서드의 이름 : " + method.getName() + "()"); //getAllAlbums()
+		log.info("2) 호출 결과 타입 : " + method.getReturnType().getCanonicalName()); //org.springframework.http.ResponseEntity
+		log.info("2) 호출 결과 타입 : " + method.getGenericReturnType()); //org.springframework.http.ResponseEntity<java.util.List<com.example.demo.model.Album>>
+		log.info("2) 호출 결과 타입 : " + method.getReturnType().getSimpleName()); //ResponseEntity
 
 		log.info("3) 메서드 인자 : ");
-		for (Object arg: joinPoint.getArgs()) {
-			log.info("arg.getClass().getSimpleName() = " + arg.getClass().getSimpleName() + " 타입의 값 : " + arg.toString());
+		for (Object arg : joinPoint.getArgs()) {
+			log.info("	" + arg.getClass().getSimpleName() + " 타입의 값 : " + arg.toString());
 		}
 
-		customLog.setItem("");
-		customLog.setAction("");
+		// for (Parameter parameter : method.getParameters()) {
+		// 	log.info("parameter = " + parameter.getName());
+		// 	log.info("parameter.getType() = " + parameter.getType());
+		// }
+		customLog.setItem(logging.item());
+		customLog.setAction(logging.action());
 		log.info("customLog = " + customLog.toString());
 
 		return methodInvocationAlert;
