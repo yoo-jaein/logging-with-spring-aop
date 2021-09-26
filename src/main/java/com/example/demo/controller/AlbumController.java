@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -63,6 +64,7 @@ public class AlbumController {
 		newAlbum.setPrice(album.getPrice());
 		newAlbum.setTitle(album.getTitle());
 		newAlbum.setStockQuantity(album.getStockQuantity());
+		MDC.put("album_id", id.toString());
 
 		return new ResponseEntity<>(albumRepository.save(newAlbum), HttpStatus.OK);
 	}
