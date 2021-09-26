@@ -11,6 +11,8 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.MDC;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -39,17 +41,19 @@ public class LoggerAspect {
 		customLog.setDomain(request.getServerName());
 
 		// 메서드 호출 이전
+		Object result = joinPoint.proceed();
+		// 메서드 호출 이후
 
-		Object methodInvocationAlert = null;
-		try {
-			methodInvocationAlert = joinPoint.proceed();
-			customLog.setResult("success");
-		} catch(Throwable e) {
-			customLog.setResult("fail-" + e.toString());
-			log.error("메서드 호출 중 예외가 발생했습니다!");
+		if (result instanceof ResponseEntity) {
+			ResponseEntity responseEntity = (ResponseEntity) result;
+
+			if (responseEntity.getStatusCode() == HttpStatus.OK) {
+				customLog.setResult("suceess");
+			} else {
+				customLog.setResult("fail-" + responseEntity.getStatusCode().getReasonPhrase());
+			}
 		}
 
-		// 메서드 호출 이후
 		log.info("~호출한 메서드 정보~");
 
 		MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
@@ -75,7 +79,7 @@ public class LoggerAspect {
 		log.info(MDC.get("album_id"));
 		log.info("customLog = " + customLog.toString());
 
-		return methodInvocationAlert;
+		return result;
 	}
 
 	private static String getClientIpAddr(HttpServletRequest request) {
