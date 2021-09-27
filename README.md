@@ -26,4 +26,5 @@
 - 로그를 남기는 방법에는 Interceptor, Filter, AOP 등이 있다. 로그 출력을 위해서 요청자의 요청과 그 결과 모두를 확인해야 하기 때문에 스프링 AOP를 선택하여 구현했다.
 - 기본 데이터 세팅을 위해 schema.sql, data.sql을 구성했다.
 - 로그 출력 세팅은 logback-spring.xml에서 구성했다.
-- MDC ?
+- 클라이언트의 ip를 구할 때 IPv6로 되어있어 이를 IPv4로 변환시켰다. (IntelliJ 기준) Run Configurations... -> Add VM Options -> -Djava.net.preferIPv4Stack=true 입력 후 Apply로 설정한다.
+- 커스텀 어노테이션에 파라미터 구성하여 사용할 수 있다. 파라미터로 로그를 위한 정보(action, item)를 전달했다.
