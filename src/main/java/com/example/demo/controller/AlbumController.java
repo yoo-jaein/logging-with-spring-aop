@@ -3,7 +3,6 @@ package com.example.demo.controller;
 import java.util.List;
 import java.util.Optional;
 
-import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.annotation.Logging;
 import com.example.demo.model.Album;
-import com.example.demo.repository.AlbumRepository;
 import com.example.demo.service.AlbumService;
 
 import lombok.RequiredArgsConstructor;

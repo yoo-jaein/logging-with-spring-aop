@@ -14,7 +14,8 @@
   - 요청의 성공 여부, 실패한 경우 사유까지
   - 요청 uri
   - 요청 도메인 주소
-  - 요청 세부 정보
+  - 호출한 메서드 이름
+  - (요청 세부 정보)
 
 ## 개발 환경
 - Spring Boot 2.5.5
@@ -30,6 +31,7 @@
 - 클라이언트의 ip를 구할 때 IPv6로 되어있어 이를 IPv4로 변환시켰다. (IntelliJ 기준) Run Configurations... -> Add VM Options -> -Djava.net.preferIPv4Stack=true 입력 후 Apply로 설정한다.
 - 커스텀 어노테이션에 파라미터 구성하여 사용할 수 있다. 파라미터로 로그를 위한 정보(action, item)를 전달했다.
 - customLog를 JSON 형식으로 변환하려면 ObjectMapper().writeValueAsString()에 Map을 전달해야 한다. 여기서 Map을 HashMap으로 만든 경우 put한 순서를 보장하지 않고 데이터가 섞였다. TreeMap으로 만든 경우 key의 데이터로 abc 순으로 자연 정렬되었다. LinkedHashMap으로 만든 경우 put한 순서 그대로 데이터가 쌓였다. 따라서 최종적으로 LinkedHashMap으로 Map을 구성하여 전달했다.
+- MDC를 통해 요청 컨텍스트의 다양한 정보를 로그에 포함할 수 있다. JSON Appender로 로그를 출력했을 때, message element와 별개로 존재하는 mdc element에서 데이터를 확인할 수 있다.
 
 ## 구현 결과
 ### CONSOLE
