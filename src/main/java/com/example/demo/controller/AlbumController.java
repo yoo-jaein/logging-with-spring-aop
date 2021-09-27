@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.annotation.Logging;
 import com.example.demo.model.Album;
 import com.example.demo.repository.AlbumRepository;
+import com.example.demo.service.AlbumService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,12 +26,13 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/album")
 @RequiredArgsConstructor
 public class AlbumController {
-	private final AlbumRepository albumRepository;
+
+	private final AlbumService albumService;
 
 	@Logging(item = "Album")
 	@GetMapping("/{id}")
 	public ResponseEntity<Album> getAlbum(@PathVariable Long id) {
-		Optional<Album> albumOptional = albumRepository.findById(id);
+		Optional<Album> albumOptional = albumService.findAlbumById(id);
 		if (albumOptional.isEmpty()) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		} else {
@@ -41,45 +43,37 @@ public class AlbumController {
 	@Logging(item = "Album")
 	@GetMapping
 	public ResponseEntity<List<Album>> getAllAlbums() {
-		return new ResponseEntity<>(albumRepository.findAll(), HttpStatus.OK);
+		return new ResponseEntity<>(albumService.findAllAlbum(), HttpStatus.OK);
 	}
 
 	@Logging(item = "Album", action = "create")
 	@PostMapping
 	public ResponseEntity<Album> postAlbum(@RequestBody Album album) {
-		return new ResponseEntity<>(albumRepository.save(album), HttpStatus.OK);
+		return new ResponseEntity<>(albumService.createAlbum(album), HttpStatus.OK);
 	}
 
 	@Logging(item = "Album", action = "update")
 	@PutMapping("/{id}")
 	public ResponseEntity<Album> putAlbum(@PathVariable Long id, @RequestBody Album album) {
-		Optional<Album> albumOptional = albumRepository.findById(id);
-
-		if (albumOptional.isEmpty()) {
+		try {
+			Album newAlbum = albumService.updateAlbum(id, album);
+			return new ResponseEntity<>(newAlbum, HttpStatus.OK);
+		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-
-		Album newAlbum = albumOptional.get();
-		newAlbum.setArtist(album.getArtist());
-		newAlbum.setPrice(album.getPrice());
-		newAlbum.setTitle(album.getTitle());
-		newAlbum.setStockQuantity(album.getStockQuantity());
-		MDC.put("album_id", id.toString());
-
-		return new ResponseEntity<>(albumRepository.save(newAlbum), HttpStatus.OK);
 	}
 
 	@Logging(item = "Album", action = "delete")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<HttpStatus> deleteAlbum(@PathVariable Long id) {
-		albumRepository.deleteById(id);
+		albumService.deleteAlbum(id);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
 	@Logging(item = "Album", action = "delete")
 	@DeleteMapping
 	public ResponseEntity<HttpStatus> deleteAllAlbums() {
-		albumRepository.deleteAll();
+		albumService.deleteAllAlbum();
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 }
