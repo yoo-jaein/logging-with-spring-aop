@@ -67,13 +67,13 @@ public class AlbumController {
 	@DeleteMapping("/{id}")
 	public ResponseEntity<HttpStatus> deleteAlbum(@PathVariable Long id) {
 		albumService.deleteAlbum(id);
-		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 	@Logging(item = "Album", action = "delete")
 	@DeleteMapping
 	public ResponseEntity<HttpStatus> deleteAllAlbums() {
 		albumService.deleteAllAlbum();
-		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }

@@ -3,6 +3,8 @@ package com.example.demo.aspect;
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -18,6 +20,8 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.example.demo.annotation.Logging;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,7 +33,7 @@ public class LoggerAspect {
 	private static final String format = "yyyy-MM-dd HH:mm:ss.SSS"; //2021-09-24 23:17:46.572
 
 	@Around("@annotation(com.example.demo.annotation.Logging) && @annotation(logging)")
-	public Object aroundLogger(ProceedingJoinPoint joinPoint, Logging logging) {
+	public Object aroundLogger(ProceedingJoinPoint joinPoint, Logging logging) throws Exception {
 		CustomLog customLog = new CustomLog();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
 		customLog.setCreatedAt(LocalDateTime.now().format(formatter));
@@ -82,7 +86,8 @@ public class LoggerAspect {
 		customLog.setAction(logging.action());
 
 		// log.info(MDC.get("album_id"));
-		log.info("customLog = " + customLog.toString());
+
+		log.info(getMessage(customLog));
 
 		return result;
 	}
@@ -111,5 +116,20 @@ public class LoggerAspect {
 		}
 
 		return ip;
+	}
+
+	private String getMessage(CustomLog customLog) throws JsonProcessingException {
+		Map<String,String> map = new LinkedHashMap<>();
+
+		map.put("createdAt", customLog.getCreatedAt());
+		map.put("ip", customLog.getIp());
+		map.put("item", customLog.getItem());
+		map.put("action", customLog.getAction());
+		map.put("result", customLog.getResult());
+		map.put("uri", customLog.getUri());
+		map.put("domain", customLog.getDomain());
+		map.put("method", customLog.getMethod());
+
+		return new ObjectMapper().writeValueAsString(map);
 	}
 }
