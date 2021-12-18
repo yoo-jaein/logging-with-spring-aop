@@ -27,7 +27,7 @@ public class AlbumController {
 
 	private final AlbumService albumService;
 
-	@Logging(item = "Album")
+	@Logging(item = "Album", action = "get")
 	@GetMapping("/{id}")
 	public ResponseEntity<Album> getAlbum(@PathVariable Long id) {
 		Optional<Album> albumOptional = albumService.findAlbumById(id);
@@ -38,7 +38,7 @@ public class AlbumController {
 		}
 	}
 
-	@Logging(item = "Album")
+	@Logging(item = "Album", action = "get")
 	@GetMapping
 	public ResponseEntity<List<Album>> getAllAlbums() {
 		return new ResponseEntity<>(albumService.findAllAlbum(), HttpStatus.OK);

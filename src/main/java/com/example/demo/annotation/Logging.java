@@ -9,5 +9,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Logging {
 	String item();
-	String action() default "search";
+	String action();
 }

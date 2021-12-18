@@ -3,14 +3,13 @@
 
 ## 요구 사항
 - 컨트롤러로 들어오는 모든 요청에 대해 로그를 남긴다. 다만, 로그를 출력하지 않는 예외 메서드도 일부 존재한다.
-- 컨트롤러 작업 전과 후의 데이터를 한 줄의 로그로 출력한다.
-- 로그 출력 방식은 stdout(콘솔), .log 파일 두 가지이다.
-- 각 로그는 JSON 형식을 가진다.
+- 컨트롤러 작업 전과 후의 데이터를 한 줄의 JSON 형식으로 출력한다.
+- 로그는 콘솔에 출력된다.
 - 로그의 필드로 다음의 정보를 가진다.
   - 요청 시간
   - 요청자의 IP
-  - 요청 대상
-  - 대상에 한 요청
+  - 요청 대상 - item
+  - 대상에 시도한 작업 - action
   - 요청의 성공 여부, 실패한 경우 사유까지
   - 요청 uri
   - 요청 도메인 주소
@@ -31,7 +30,39 @@
 - 클라이언트의 ip를 구할 때 IPv6로 되어있어 이를 IPv4로 변환시켰다. (IntelliJ 기준) Run Configurations... -> Add VM Options -> -Djava.net.preferIPv4Stack=true 입력 후 Apply로 설정한다.
 - 커스텀 어노테이션에 파라미터 구성하여 사용할 수 있다. 파라미터로 로그를 위한 정보(action, item)를 전달했다.
 - customLog를 JSON 형식으로 변환하려면 ObjectMapper().writeValueAsString()에 Map을 전달해야 한다. 여기서 Map을 HashMap으로 만든 경우 put한 순서를 보장하지 않고 데이터가 섞였다. TreeMap으로 만든 경우 key의 데이터로 abc 순으로 자연 정렬되었다. LinkedHashMap으로 만든 경우 put한 순서 그대로 데이터가 쌓였다. 따라서 최종적으로 LinkedHashMap으로 Map을 구성하여 전달했다.
-- MDC를 통해 요청 컨텍스트의 다양한 정보를 로그에 포함할 수 있다. JSON Appender로 로그를 출력했을 때, message element와 별개로 존재하는 mdc element에서 데이터를 확인할 수 있다.
+
+## 추가 내용
+```java
+log.info(MDC.get("album_id"));
+```
+- MDC를 통해 요청 컨텍스트의 다양한 정보를 로그에 포함할 수 있다. JSON Appender로 로그를 출력했을 때, message element와 별개로 존재하는 mdc element에서 데이터를 확인할 수 있다. MDC로 트랜잭션 id를 설정하는 경우가 많다.
+
+```java
+Method method = methodSignature.getMethod();
+
+log.info("1) 호출한 메서드의 이름 : " + method.getName() + "()");
+//getAllAlbums()
+
+log.info("2) 호출 결과 타입 : " + method.getReturnType().getCanonicalName());
+//org.springframework.http.ResponseEntity
+        
+log.info("2) 호출 결과 타입 : " + method.getGenericReturnType());
+//org.springframework.http.ResponseEntity<java.util.List<com.example.demo.model.Album>>
+
+log.info("2) 호출 결과 타입 : " + method.getReturnType().getSimpleName()); 
+//ResponseEntity
+
+log.info("3) 메서드 인자 : ");
+for (Object arg : joinPoint.getArgs()) {
+	log.info("	" + arg.getClass().getSimpleName() + " 타입의 값 : " + arg.toString());
+}
+
+for (Parameter parameter : method.getParameters()) {
+	log.info("parameter = " + parameter.getName());
+	log.info("parameter.getType() = " + parameter.getType());
+}
+```
+- 실행되는 메서드에 대한 다양한 데이터(이름, 리턴 타입, 인자, 파라미터..)들을 확인해볼 수도 있다.
 
 ## 구현 결과
 ### CONSOLE

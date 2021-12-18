@@ -40,7 +40,6 @@ public class AlbumService {
 		newAlbum.setPrice(album.getPrice());
 		newAlbum.setTitle(album.getTitle());
 		newAlbum.setStockQuantity(album.getStockQuantity());
-		// MDC.put("Update Album with album_id=", id.toString());
 
 		return albumRepository.save(newAlbum);
 	}

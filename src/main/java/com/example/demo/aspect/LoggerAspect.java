@@ -28,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class LoggerAspect {
 
-	private static final String format = "yyyy-MM-dd HH:mm:ss.SSS"; //2021-09-24 23:17:46.572
+	private static final String format = "yyyy-MM-dd HH:mm:ss.SSS";
 
 	@Around("@annotation(com.example.demo.annotation.Logging) && @annotation(logging)")
 	public Object aroundLogger(ProceedingJoinPoint joinPoint, Logging logging) throws Exception {
@@ -62,28 +62,8 @@ public class LoggerAspect {
 
 		MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
 		customLog.setMethod(methodSignature.getName());
-
-		// Method method = methodSignature.getMethod();
-
-		// log.info("1) 호출한 메서드의 이름 : " + method.getName() + "()"); //getAllAlbums()
-		// log.info("2) 호출 결과 타입 : " + method.getReturnType().getCanonicalName()); //org.springframework.http.ResponseEntity
-		// log.info("2) 호출 결과 타입 : " + method.getGenericReturnType()); //org.springframework.http.ResponseEntity<java.util.List<com.example.demo.model.Album>>
-		// log.info("2) 호출 결과 타입 : " + method.getReturnType().getSimpleName()); //ResponseEntity
-		//
-		// log.info("3) 메서드 인자 : ");
-		// for (Object arg : joinPoint.getArgs()) {
-		// 	log.info("	" + arg.getClass().getSimpleName() + " 타입의 값 : " + arg.toString());
-		// }
-
-		// for (Parameter parameter : method.getParameters()) {
-		// 	log.info("parameter = " + parameter.getName());
-		// 	log.info("parameter.getType() = " + parameter.getType());
-		// }
-
 		customLog.setItem(logging.item());
 		customLog.setAction(logging.action());
-
-		// log.info(MDC.get("album_id"));
 
 		log.info(getMessage(customLog));
 
